@@ -4,114 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Title page</title>
-  <script src="./js/app.js"></script>
+  <script src="./js/app.js" defer></script>
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 
 <body>
   <header>
     <h1>Books on my library</h1>
+    <button>Add book <span></span></button>
   </header>
   <main>
-    <div class="cardContainer">
-      <div class="card">
-        <figure class="cardImgContainer">
-          <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-        </figure>
-        <div class="cardData">
-          <span class="bookTitle">book title</span>
-          <p>by <span class="bookAuthor">author title</span></p>
-          <p class="bookInfo">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure, consectetur.</p>
-          <p>Pages: <span class="bookPages">000</span></p>
-          <button class="readButton">Mark as read</button>
-        </div>
-      </div>
-      <div class="card">
-        <figure class="cardImgContainer">
-          <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-        </figure>
-        <div class="cardData">
-          <span class="bookTitle">book title</span>
-          <p>by <span class="bookAuthor">author title</span></p>
-          <p class="bookInfo">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure, consectetur.</p>
-          <p>Pages: <span class="bookPages">000</span></p>
-          <button class="readButton">Mark as read</button>
-        </div>
-      </div>
-      <div class="card">
-        <figure class="cardImgContainer">
-          <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-        </figure>
-        <div class="cardData">
-          <span class="bookTitle">book title</span>
-          <p>by <span class="bookAuthor">author title</span></p>
-          <p class="bookInfo">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure, consectetur.</p>
-          <p>Pages: <span class="bookPages">000</span></p>
-          <button class="readButton">Mark as read</button>
-        </div>
-      </div>
-      <div class="card">
-        <figure class="cardImgContainer">
-          <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-        </figure>
-        <div class="cardData">
-          <span class="bookTitle">book title</span>
-          <p>by <span class="bookAuthor">author title</span></p>
-          <p class="bookInfo">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure, consectetur.</p>
-          <p>Pages: <span class="bookPages">000</span></p>
-          <button class="readButton">Mark as read</button>
-        </div>
-      </div>
-      <div class="card">
-        <figure class="cardImgContainer">
-          <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-        </figure>
-        <div class="cardData">
-          <span class="bookTitle">book title</span>
-          <p>by <span class="bookAuthor">author title</span></p>
-          <p class="bookInfo">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure, consectetur.</p>
-          <p>Pages: <span class="bookPages">000</span></p>
-          <button class="readButton">Mark as read</button>
-        </div>
-      </div>
-      <div class="card">
-        <figure class="cardImgContainer">
-          <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-        </figure>
-        <div class="cardData">
-          <span class="bookTitle">book title</span>
-          <p>by <span class="bookAuthor">author title</span></p>
-          <p class="bookInfo">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure, consectetur.</p>
-          <p>Pages: <span class="bookPages">000</span></p>
-          <button class="readButton">Mark as read</button>
-        </div>
-      </div>
-      <div class="card">
-        <figure class="cardImgContainer">
-          <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-        </figure>
-        <div class="cardData">
-          <span class="bookTitle">book title</span>
-          <p>by <span class="bookAuthor">author title</span></p>
-          <p class="bookInfo">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure, consectetur.</p>
-          <p>Pages: <span class="bookPages">000</span></p>
-          <button class="readButton">Mark as read</button>
-        </div>
-      </div>
-      <div class="card">
-        <figure class="cardImgContainer">
-          <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-        </figure>
-        <div class="cardData">
-          <span class="bookTitle">book title</span>
-          <p>by <span class="bookAuthor">author title</span></p>
-          <p class="bookInfo">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iure, consectetur.</p>
-          <p>Pages: <span class="bookPages">000</span></p>
-          <button class="readButton">Mark as read</button>
-        </div>
-      </div>
-      
-
+    <div class="cardContainer" id="bookContainer">
+      <div class="initialMessage">Click on "Add book"to add your first book</div>
     </div>
   </main>
   <footer>
