@@ -1,4 +1,100 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header h1 {
+    padding: 10px 20px;
+    color: white;
+}
+
+main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 30px;
+    background-color: rgb(58, 58, 58);
+}
+
+header {
+    background-color: black;
+}
+
+.cardContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-rows: repeat(2, minmax(265px, 1fr));
+    grid-auto-rows: minmax(265px, 1fr);
+    gap: 20px;
+    overflow-y: auto;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 10px 15px;
+    border: 1px solid #d0d0f7;
+    border-radius: 15px;
+    gap: 10px;
+
+}
+
+.card .cardImgContainer {
+    background-color: #d0d0f7;
+    max-height: 50%;
+    max-width: 100%;
+    flex: 0 0 50%;
+    display: flex;
+    justify-content: center;
+    border: 1px solid #d0d0f7;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card .cardImgContainer .bookImg {
+    width: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+}
+
+.card .cardData {
+    flex: 0 0 50%;
+    display: grid;
+    padding: 0 0 10px;
+}
+
+.card .cardData .bookTitle {
+    font-weight: bold;
+}
+
+.card .bookAuthor, .bookPages {
+    font-weight: 600;
+    color: darkgray;
+}
+
+.card .cardData p {
+    color: gray;
+}
+
+.card .readButton {
+    background-color: rgb(14, 173, 226);
+    border-radius: 13px;
+    border: none;
+    width: fit-content;
+    justify-self: center;
+    padding: 5px 15px;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    background-color: rgb(70, 133, 154);
+    color: white;
 }
