@@ -40,9 +40,84 @@ function createCard(title, author, content = "", pages, read) {
     `);
 
     const inputElements = card.getElementsByClassName("userInput");
-    for (let i = 0; i < 5; i++){
+    for (let i = 0; i < 4; i++) {
         inputElements[i].insertAdjacentText('afterbegin', arguments[i]);
     }
 
     return card;
 }
+
+
+function appendCard(card) {
+    if (!hasBooks) {
+        bookContainer.innerHTML = "";
+        bookContainer.classList.add('mainGrid');
+        hasBooks = true;
+    }
+    bookContainer.appendChild(card);
+}
+
+const bookContainer = document.getElementById('bookContainer');
+let hasBooks = false;
+
+if (myLibrary.length > 0) {
+    displaySavedBooks();
+    hasBooks = true;
+}
+
+const formCard = document.createElement('div');
+formCard.classList.add('formCardContainer');
+formCard.setAttribute("id", "formContainer");
+
+formCard.insertAdjacentHTML('afterbegin', `
+<form class="formCard">
+    <legend><h1>Add your new book data</h1></legend>
+    <p>
+    <label for="title">
+        <span>Book title: </span>
+        <input type="text" id="title" name="bookTitle">
+    </label>
+    </p>
+    <p>
+    <label for="author">
+        <span>Book author: </span>
+        <input type="text" id="author" name="bookAuthorName">
+    </label>
+    </p>
+    <p>
+    <label for="pages">
+        <span>Number of pages: </span>
+        <input type="number" id="pages" name="bookTotalPages">
+    </label>
+    </p>
+    <p>
+    <label for="read">
+        <span>Have you read this book? </span>
+        <select name="bookHasBeenRead" id="read">
+        <option value="true">Yes</option>
+        <option value="false" selected="selected">No</option>
+        </select>
+    </label>
+    </p>
+    <p>
+    <button type="button" id="saveBook">Save book</button>
+    </p>
+    <button type="button" id="exitForm">X</button>
+</form>
+`);
+
+const formButtons = formCard.getElementsByTagName('button');
+//formButtons[0].addEventListener('click', saveInputs);
+formButtons[1].addEventListener('click',closeInputForm);
+
+
+function displayInputForm() {
+    bookContainer.parentElement.appendChild(formCard);
+}
+
+function closeInputForm() {
+    bookContainer.parentElement.lastChild.remove();
+}
+
+const addButton = document.getElementById('addNewBook');
+addButton.addEventListener('click', displayInputForm);
