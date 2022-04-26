@@ -27,50 +27,22 @@ function createCard(title, author, content = "", pages, read) {
     const card = document.createElement('div');
     card.classList.add("card");
 
-    const figure = document.createElement('figure');
-    figure.classList.add("cardImgContainer");
-    card.appendChild(figure);
+    card.insertAdjacentHTML('afterbegin', `
+    <figure class="cardImgContainer">
+        <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
+    </figure>
+    <div class="cardData"><span class="bookTitle userInput"></span>
+        <p>by <span class="bookAuthor userInput"></span></p>
+        <p class="bookSummary userInput"></p>
+        <p>Pages: <span class="bookPages userInput"></span></p>
+        <button class="readButton userInput"></button>
+    </div>
+    `);
 
-    const img = document.createElement('img');
-    img.classList.add("bookImg");
-    img.setAttribute('src', "./img/pexels-heather-mckeen-582070.jpg");
-    img.setAttribute('alt', "book image");
-    figure.appendChild(img);
-
-    const cardData = document.createElement('div');
-    cardData.classList.add('cardData');
-    card.appendChild(cardData);
-
-    const titleSpan = document.createElement('span');
-    titleSpan.classList.add("bookTitle");
-    titleSpan.textContent = title;
-    cardData.append(titleSpan);
-
-    const authorContainer = document.createElement('p');
-    authorContainer.textContent = "by ";
-    const authorName = document.createElement('span');
-    authorName.classList.add("bookAuthor");
-    authorName.textContent = author;
-    authorContainer.appendChild(authorName);
-    cardData.append(authorContainer);
-
-    const bookSummary = document.createElement('p');
-    bookSummary.classList.add('bookSummary');
-    bookSummary.textContent = content;
-    cardData.appendChild(bookSummary);
-    
-    const pagesContainer = document.createElement('p');
-    pagesContainer.textContent = "Pages: ";
-    const pagesNumber = document.createElement('span');
-    pagesNumber.classList.add("bookPages");
-    pagesNumber.textContent = pages;
-    pagesContainer.appendChild(pagesNumber);
-    cardData.appendChild(pagesContainer);
-
-    const toggleButton = document.createElement('button');
-    toggleButton.classList.add("readButton");
-    toggleButton.textContent = read ? "Already read" : "Mark as read" ;
-    cardData.appendChild(toggleButton);
+    const inputElements = card.getElementsByClassName("userInput");
+    for (let i = 0; i < 5; i++){
+        inputElements[i].insertAdjacentText('afterbegin', arguments[i]);
+    }
 
     return card;
 }
