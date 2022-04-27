@@ -15,9 +15,10 @@ function loadStorage() {
         myLibrary.push(restoredBook);
     }
 }
-function Book(title, author, pages, read) {
+function Book(title, author, summary = "", pages, read) {
     this.title = title;
     this.author = author;
+    this.summary = summary;
     this.pages = pages;
     this.read = read;
 }
@@ -36,11 +37,11 @@ function convertBook(props) {
     return restoredBook;
 }
 
-function addBookToLibrary(title, author, pages, read) {
-    const newBook = new Book(title, author, pages, read);
+function addBookToLibrary(title, author, summary, pages, read) {
+    const newBook = new Book(title, author, summary, pages, read);
     const index = myLibrary.push(newBook) - 1;
     updateStorage();
-    const newCard = createCard(newBook.title, newBook.author, newBook.pages, newBook.read, index);
+    const newCard = createCard(newBook.title, newBook.author, "", newBook.pages, newBook.read, index);
     appendCard(newCard);
     return;
 }
@@ -51,12 +52,12 @@ function displaySavedBooks() {
 
     for (let book of myLibrary) {
         const index = myLibrary.indexOf(book);
-        const newCard = createCard(book.title, book.author, book.pages, book.read, index);
+        const newCard = createCard(book.title, book.author, "", book.pages, book.read, index);
         appendCard(newCard);
     }
 }
 
-function createCard(title, author, pages, read, index) {
+function createCard(title, author, summary, pages, read, index) {
     const card = document.createElement('div');
     card.classList.add("card");
     card.setAttribute('data-index', index);
@@ -75,7 +76,7 @@ function createCard(title, author, pages, read, index) {
     `);
 
     const inputElements = card.getElementsByClassName("userInput");
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
         inputElements[i].insertAdjacentText('afterbegin', arguments[i]);
     }
 
@@ -120,6 +121,12 @@ formCard.insertAdjacentHTML('afterbegin', `
     </label>
     </p>
     <p>
+    <label for="summary">
+        <span>Book summary: </span>
+        <textarea id="summary" name="bookSummary" rows="10" cols="50"> </textarea>
+    </label>
+    </p>
+    <p>
     <label for="pages">
         <span>Number of pages: </span>
         <input type="number" id="pages" name="bookTotalPages">
@@ -159,7 +166,7 @@ function closeInputForm() {
 
 function saveInputs() {
     const form = document.getElementById("userInputForm").elements;
-    const data = [form[0].value, form[1].value, form[2].value, form[3].value]
+    const data = [form[0].value, form[1].value, form[2].value, form[3].value, form[4].value];
     addBookToLibrary(...data);
     closeInputForm();
 }
