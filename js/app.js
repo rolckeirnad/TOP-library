@@ -14,16 +14,22 @@ Book.prototype.info = function () {
 function addBookToLibrary(title, author, pages, read) {
     const newBook = new Book(title, author, pages, read);
     myLibrary.push(newBook);
+    const newCard = createCard(newBook.title, newBook.author, newBook.pages, newBook.read);
+    appendCard(newCard);
     return;
 }
 
-function displayBooks() {
+function displaySavedBooks() {
+    bookContainer.innerHTML = "";
+    bookContainer.classList.add('mainGrid');
+
     for (let book of myLibrary) {
-        console.log(book.info());
+        let newCard = createCard(book.title, book.author, book.pages, book.read);
+        appendCard(newCard);
     }
 }
 
-function createCard(title, author, content = "", pages, read) {
+function createCard(title, author, pages, read) {
     const card = document.createElement('div');
     card.classList.add("card");
 
@@ -70,7 +76,7 @@ formCard.classList.add('formCardContainer');
 formCard.setAttribute("id", "formContainer");
 
 formCard.insertAdjacentHTML('afterbegin', `
-<form class="formCard">
+<form class="formCard" id="userInputForm">
     <legend><h1>Add your new book data</h1></legend>
     <p>
     <label for="title">
@@ -106,17 +112,27 @@ formCard.insertAdjacentHTML('afterbegin', `
 </form>
 `);
 
+
 const formButtons = formCard.getElementsByTagName('button');
-//formButtons[0].addEventListener('click', saveInputs);
+formButtons[0].addEventListener('click', saveInputs);
 formButtons[1].addEventListener('click',closeInputForm);
 
 
 function displayInputForm() {
     bookContainer.parentElement.appendChild(formCard);
+    const formInputs = document.getElementById("userInputForm").elements;
+    for (let input of formInputs) input.value = "";
 }
 
 function closeInputForm() {
     bookContainer.parentElement.lastChild.remove();
+}
+
+function saveInputs() {
+    const form = document.getElementById("userInputForm").elements;
+    const data = [form[0].value, form[1].value, form[2].value,form[3].value]
+    addBookToLibrary(...data);
+    closeInputForm();
 }
 
 const addButton = document.getElementById('addNewBook');
