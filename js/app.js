@@ -1,5 +1,18 @@
-let myLibrary = [];
+let myLibrary;
 
+if (localStorage.getItem('myBooks')) {
+    loadStorage();
+} else {
+    myLibrary = [];
+}
+
+function updateStorage() {
+    localStorage.setItem('myBooks', JSON.stringify(myLibrary));
+}
+
+function loadStorage() {
+    myLibrary = JSON.parse(localStorage.getItem('myBooks'));
+}
 function Book(title, author, pages, read) {
     this.title = title;
     this.author = author;
@@ -14,6 +27,7 @@ Book.prototype.info = function () {
 function addBookToLibrary(title, author, pages, read) {
     const newBook = new Book(title, author, pages, read);
     const index = myLibrary.push(newBook) - 1;
+    updateStorage();
     const newCard = createCard(newBook.title, newBook.author, newBook.pages, newBook.read, index);
     appendCard(newCard);
     return;
@@ -144,7 +158,7 @@ function showBookInfo(index) {
     const bookData = myLibrary[index];
     const keys = Object.keys(bookData);
     // Display values in form
-    for (let i = 0; i < keys.length; i++){
+    for (let i = 0; i < keys.length; i++) {
         formInputs[i].value = bookData[keys[i]];
     }
 }
