@@ -1,9 +1,7 @@
-let myLibrary;
+let myLibrary = [];
 
 if (localStorage.getItem('myBooks')) {
     loadStorage();
-} else {
-    myLibrary = [];
 }
 
 function updateStorage() {
@@ -11,7 +9,11 @@ function updateStorage() {
 }
 
 function loadStorage() {
-    myLibrary = JSON.parse(localStorage.getItem('myBooks'));
+    const loadedBooks = JSON.parse(localStorage.getItem('myBooks'));
+    for (let book of loadedBooks) {
+        const restoredBook = convertBook(book);
+        myLibrary.push(restoredBook);
+    }
 }
 function Book(title, author, pages, read) {
     this.title = title;
@@ -22,6 +24,16 @@ function Book(title, author, pages, read) {
 
 Book.prototype.info = function () {
     return `${this.title} by ${this.author}, ${this.pages}, ${this.read ? "already read" : "not read yet"}`;
+}
+
+function convertBook(props) {
+    let restoredBook = new Book();
+    for (var key in props) {
+        if (props.hasOwnProperty(key)) {
+            restoredBook[key] = props[key];
+        }
+    }
+    return restoredBook;
 }
 
 function addBookToLibrary(title, author, pages, read) {
