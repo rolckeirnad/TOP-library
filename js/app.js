@@ -13,8 +13,8 @@ Book.prototype.info = function () {
 
 function addBookToLibrary(title, author, pages, read) {
     const newBook = new Book(title, author, pages, read);
-    myLibrary.push(newBook);
-    const newCard = createCard(newBook.title, newBook.author, newBook.pages, newBook.read);
+    const index = myLibrary.push(newBook) - 1;
+    const newCard = createCard(newBook.title, newBook.author, newBook.pages, newBook.read, index);
     appendCard(newCard);
     return;
 }
@@ -24,14 +24,17 @@ function displaySavedBooks() {
     bookContainer.classList.add('mainGrid');
 
     for (let book of myLibrary) {
-        let newCard = createCard(book.title, book.author, book.pages, book.read);
+        const index = myLibrary.indexOf(book);
+        const newCard = createCard(book.title, book.author, book.pages, book.read, index);
         appendCard(newCard);
     }
 }
 
-function createCard(title, author, pages, read) {
+function createCard(title, author, pages, read, index) {
     const card = document.createElement('div');
     card.classList.add("card");
+    card.setAttribute('data-index', index);
+    card.addEventListener('click', e => showBookInfo(card.dataset.index));
 
     card.insertAdjacentHTML('afterbegin', `
     <figure class="cardImgContainer">
@@ -115,7 +118,7 @@ formCard.insertAdjacentHTML('afterbegin', `
 
 const formButtons = formCard.getElementsByTagName('button');
 formButtons[0].addEventListener('click', saveInputs);
-formButtons[1].addEventListener('click',closeInputForm);
+formButtons[1].addEventListener('click', closeInputForm);
 
 
 function displayInputForm() {
@@ -130,9 +133,20 @@ function closeInputForm() {
 
 function saveInputs() {
     const form = document.getElementById("userInputForm").elements;
-    const data = [form[0].value, form[1].value, form[2].value,form[3].value]
+    const data = [form[0].value, form[1].value, form[2].value, form[3].value]
     addBookToLibrary(...data);
     closeInputForm();
+}
+
+function showBookInfo(index) {
+    displayInputForm();
+    const formInputs = document.getElementById("userInputForm").elements;
+    const bookData = myLibrary[index];
+    const keys = Object.keys(bookData);
+    // Display values in form
+    for (let i = 0; i < keys.length; i++){
+        formInputs[i].value = bookData[keys[i]];
+    }
 }
 
 const addButton = document.getElementById('addNewBook');
