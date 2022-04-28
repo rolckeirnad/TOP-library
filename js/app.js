@@ -142,12 +142,58 @@ formCard.insertAdjacentHTML('afterbegin', `
     </label>
     </p>
     <p>
-    <button type="button" id="saveBook">Save book</button>
+    <button type="button" class="saveButton">Save book</button>
     </p>
-    <button type="button" id="exitForm">X</button>
+    <button type="button" class="exitForm">X</button>
 </form>
 `);
 
+const bookCard = document.createElement('div');
+bookCard.classList.add('bookCardContainer');
+bookCard.setAttribute("id", "bookInfoContainer");
+
+bookCard.insertAdjacentHTML('afterbegin', `
+<div class="formCard">
+  <h1>Selected book info</h1>
+  <div class="bookCardHead">
+    <div>
+      <h2>Title</h2>
+      <p class="userData"></p>
+    </div>
+    <div>
+      <h2>Author</h2>
+      <p class="userData"></p>
+    </div>
+    <div class="right">
+      <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
+    </div>
+  </div>
+  <div>
+    <h2>Summary</h2>
+    <p class="userData"></p>
+  </div>
+  <div class="bookInfoFooter">
+    <div>
+      <h2>Pages</h2>
+      <p class="userData"></p>
+    </div>
+    <div>
+      <h2>Have you read it?</h2>
+      <p class="userData"></p>
+    </div>
+  </div>
+  <div class="bookCardButtons">
+    <button type="button" class="editButton">Edit</button>
+    <button type="button" class="deleteButton">Delete</button>
+    <button type="button" class="exitForm">X</button>
+  </div>
+</div>
+`);
+
+const bookInfoButtons = bookCard.querySelectorAll('.bookCardButtons button');
+//bookInfoButtons[0].addEventListener('click', saveChanges);
+//bookInfoButtons[1];
+bookInfoButtons[2].addEventListener('click', closeInputForm);
 
 const formButtons = formCard.getElementsByTagName('button');
 formButtons[0].addEventListener('click', saveInputs);
@@ -158,6 +204,10 @@ function displayInputForm() {
     bookContainer.parentElement.appendChild(formCard);
     const formInputs = document.getElementById("userInputForm").elements;
     for (let input of formInputs) input.value = "";
+}
+
+function displayBookInfo() {
+    bookContainer.parentElement.appendChild(bookCard);
 }
 
 function closeInputForm() {
@@ -172,13 +222,13 @@ function saveInputs() {
 }
 
 function showBookInfo(index) {
-    displayInputForm();
-    const formInputs = document.getElementById("userInputForm").elements;
+    displayBookInfo();
+    const dataOutputs = document.getElementsByClassName("userData");
     const bookData = myLibrary[index];
     const keys = Object.keys(bookData);
-    // Display values in form
+    // Display values on elements
     for (let i = 0; i < keys.length; i++) {
-        formInputs[i].value = bookData[keys[i]];
+        dataOutputs[i].textContent = bookData[keys[i]];
     }
 }
 
