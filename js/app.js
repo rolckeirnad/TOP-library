@@ -37,11 +37,15 @@ function convertBook(props) {
     return restoredBook;
 }
 
-function addBookToLibrary(title, author, summary, pages, read) {
+function addBookToLibrary(title, author, summary, pages, read, index = undefined) {
     const newBook = new Book(title, author, summary, pages, read);
-    const index = myLibrary.push(newBook) - 1;
+    if (index) {
+        myLibrary[index] = newBook;
+        return;
+    }
+    const newIndex = myLibrary.push(newBook) - 1;
     updateStorage();
-    const newCard = createCard(newBook.title, newBook.author, "", newBook.pages, newBook.read, index);
+    const newCard = createCard(newBook.title, newBook.author, "", newBook.pages, newBook.read, newIndex);
     appendCard(newCard);
     return;
 }
@@ -191,12 +195,12 @@ bookCard.insertAdjacentHTML('afterbegin', `
 `);
 
 const bookInfoButtons = bookCard.querySelectorAll('.bookCardButtons button');
-//bookInfoButtons[0].addEventListener('click', saveChanges);
-//bookInfoButtons[1];
+bookInfoButtons[0].addEventListener('click', editInputs);
+bookInfoButtons[1].addEventListener('click', deleteBook);
 bookInfoButtons[2].addEventListener('click', closeInputForm);
 
 const formButtons = formCard.getElementsByTagName('button');
-formButtons[0].addEventListener('click', saveInputs);
+formButtons[0].addEventListener('click', e => saveInputs(formButtons[0].dataset.book));
 formButtons[1].addEventListener('click', closeInputForm);
 
 
@@ -214,10 +218,10 @@ function closeInputForm() {
     bookContainer.parentElement.lastChild.remove();
 }
 
-function saveInputs() {
+function saveInputs(index) {
     const form = document.getElementById("userInputForm").elements;
     const data = [form[0].value, form[1].value, form[2].value, form[3].value, form[4].value];
-    addBookToLibrary(...data);
+    addBookToLibrary(...data, index);
     closeInputForm();
 }
 
@@ -230,6 +234,27 @@ function showBookInfo(index) {
     for (let i = 0; i < keys.length; i++) {
         dataOutputs[i].textContent = bookData[keys[i]];
     }
+    dataOutputs[0].value = index; // Set index in title element to retrieve it later
+}
+
+function editInputs() {
+    const data = document.querySelector(".formCard p.userData");
+    closeInputForm();
+    displayInputForm();
+    const formInputs = document.getElementById("userInputForm").elements;
+    const bookData = myLibrary[+data.value];
+    const keys = Object.keys(bookData);
+    for (let i = 0; i < keys.length; i++) {
+        formInputs[i].value = bookData[keys[i]];
+    }
+}
+
+function deleteBook() {
+    const data = document.querySelector(".formCard p.userData");
+    myLibrary.splice(+data.value, 1);
+    updateStorage();
+    closeInputForm();
+    displaySavedBooks();
 }
 
 const addButton = document.getElementById('addNewBook');
