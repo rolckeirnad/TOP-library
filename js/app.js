@@ -72,9 +72,9 @@ function createCard(title, author, summary, pages, read, index) {
         <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
     </figure>
     <div class="cardData"><span class="bookTitle userInput"></span>
-        <p>by <span class="bookAuthor userInput"></span></p>
+        <p class="authorData">by <span class="bookAuthor userInput"></span></p>
         <p class="bookSummary userInput"></p>
-        <p>Pages: <span class="bookPages userInput"></span></p>
+        <p class="pagesData">Pages: <span class="bookPages userInput"></span></p>
         <button class="readButton userInput"></button>
     </div>
     `);
@@ -200,12 +200,13 @@ bookInfoButtons[1].addEventListener('click', deleteBook);
 bookInfoButtons[2].addEventListener('click', closeInputForm);
 
 const formButtons = formCard.getElementsByTagName('button');
-formButtons[0].addEventListener('click', e => saveInputs(formButtons[0].dataset.book));
+formButtons[0].addEventListener('click', saveInputs);
 formButtons[1].addEventListener('click', closeInputForm);
 
 
 function displayInputForm() {
     bookContainer.parentElement.appendChild(formCard);
+    document.querySelector('#userInputForm span').value = undefined;
     const formInputs = document.getElementById("userInputForm").elements;
     for (let input of formInputs) input.value = "";
 }
@@ -218,7 +219,8 @@ function closeInputForm() {
     bookContainer.parentElement.lastChild.remove();
 }
 
-function saveInputs(index) {
+function saveInputs() {
+    const index = document.querySelector('#userInputForm span').value;
     const form = document.getElementById("userInputForm").elements;
     const data = [form[0].value, form[1].value, form[2].value, form[3].value, form[4].value];
     addBookToLibrary(...data, index);
@@ -247,6 +249,7 @@ function editInputs() {
     for (let i = 0; i < keys.length; i++) {
         formInputs[i].value = bookData[keys[i]];
     }
+    document.querySelector('#userInputForm span').value = data.value;
 }
 
 function deleteBook() {
