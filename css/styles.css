@@ -97,7 +97,7 @@ header button {
 
 .card:hover {
     background-color: var(--main-active-card-color);
-    transform: scale(1.05,1.05);
+    transform: scale(1.05, 1.05);
     z-index: 2;
 }
 
@@ -135,7 +135,8 @@ header button {
     font-weight: bold;
 }
 
-.card .cardData .authorData, .cardData .bookTitle {
+.card .cardData .authorData,
+.cardData .bookTitle {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -244,4 +245,35 @@ footer {
 .bookInfoFooter {
     display: flex;
     justify-content: space-between;
+}
+
+#bookInfoContainer>div>div:nth-child(3)>p {
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 10rem;
+}
+
+button.editButton {
+    background-color: greenyellow;
+}
+
+button.deleteButton {
+    background-color: red;
+    color: var(--main-font-color);
+}
+
+.bookCardButtons{
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.editButton, .deleteButton {
+    font-weight: bold;
+    border: none;
+    width: fit-content;
+    padding: 10px 30px;
+    border-radius: 10px;
 }
