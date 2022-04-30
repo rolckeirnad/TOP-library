@@ -4,6 +4,17 @@
     box-sizing: border-box;
 }
 
+:root {
+    --main-color: #18181b;
+    --main-font-color: #f4f4f5;
+    --main-card-color: #d4d4d8;
+    --main-active-card-color: #fed7aa;
+    --main-card-font-color: #18181b;
+    --secondary-card-font-color: #52525b;
+    --secondary-color: #3f3f46;
+    --footer-background: #27272a;
+}
+
 body {
     height: 100vh;
     display: flex;
@@ -12,18 +23,18 @@ body {
 
 header h1 {
     padding: 10px 20px;
-    color: white;
+    color: var(--main-font-color);
 }
 
 main {
     flex: 1;
     overflow-y: auto;
     padding: 10px 30px;
-    background-color: rgb(58, 58, 58);
+    background-color: var(--secondary-color);
 }
 
 header {
-    background-color: black;
+    background-color: var(--main-color);
     display: inline-flex;
     align-items: center;
 }
@@ -50,7 +61,7 @@ header button {
     align-items: center;
     height: 100%;
     width: 100%;
-    color: white;
+    color: var(--main-font-color);
     font-size: 1.2rem;
     font-weight: bold;
 }
@@ -58,10 +69,9 @@ header button {
 .mainGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-template-rows: repeat(2, minmax(265px, 1fr));
-    grid-auto-rows: minmax(265px, 1fr);
+    grid-template-rows: repeat(2, minmax(248px, 30vh));
+    grid-auto-rows: minmax(248px, 30vh);
     gap: 20px;
-    overflow-y: auto;
 }
 
 .card,
@@ -69,18 +79,31 @@ header button {
     display: flex;
     flex-direction: column;
     min-height: 100%;
-    padding: 10px 15px;
+    padding: 10px 15px 15px;
     border: 1px solid #d0d0f7;
     border-radius: 15px;
     gap: 10px;
+    background-color: var(--main-card-color);
 
 }
 
+.card:hover .cardImgContainer .bookImg {
+    opacity: 1;
+}
+
+.card {
+    transition: ease 0.3s;
+}
+
+.card:hover {
+    background-color: var(--main-active-card-color);
+    transform: scale(1.05,1.05);
+    z-index: 2;
+}
+
 .card .cardImgContainer {
-    background-color: #d0d0f7;
-    max-height: 50%;
+    background-color: var(--main-card-color);
     max-width: 100%;
-    flex: 0 0 50%;
     display: flex;
     justify-content: center;
     border: 1px solid #d0d0f7;
@@ -92,26 +115,42 @@ header button {
     width: 100%;
     object-fit: cover;
     opacity: 0.5;
+    transition: ease 0.2s;
 }
 
 .card .cardData {
-    flex: 0 0 50%;
     display: grid;
-    padding: 0 0 10px;
+    grid-template-rows: 50% 50%;
+    gap: 0.2rem;
+    height: 4.2rem;
+    padding: 0 0 0px;
+    line-height: 0.9rem;
+}
+
+.card .cardData>* {
+    display: none;
 }
 
 .card .cardData .bookTitle {
     font-weight: bold;
 }
 
+.card .cardData .authorData, .cardData .bookTitle {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1rem;
+}
+
 .card .bookAuthor,
 .bookPages {
     font-weight: 600;
-    color: darkgray;
+    color: var(--secondary-card-font-color);
 }
 
 .card .cardData p {
-    color: gray;
+    color: var(--secondary-card-font-color);
 }
 
 .card .readButton {
@@ -126,8 +165,8 @@ header button {
 footer {
     display: flex;
     justify-content: center;
-    background-color: rgb(70, 133, 154);
-    color: white;
+    background-color: var(--footer-background);
+    color: var(--main-font-color);
 }
 
 #formContainer,
