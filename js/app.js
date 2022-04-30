@@ -41,6 +41,8 @@ function addBookToLibrary(title, author, summary, pages, read, index = undefined
     const newBook = new Book(title, author, summary, pages, read);
     if (index) {
         myLibrary[index] = newBook;
+        updateStorage();
+        displaySavedBooks();
         return;
     }
     const newIndex = myLibrary.push(newBook) - 1;
@@ -223,7 +225,7 @@ function saveInputs() {
     const index = document.querySelector('#userInputForm span').value;
     const form = document.getElementById("userInputForm").elements;
     const data = [form[0].value, form[1].value, form[2].value, form[3].value, form[4].value];
-    addBookToLibrary(...data, index);
+    addBookToLibrary(...data, +index);
     closeInputForm();
 }
 
