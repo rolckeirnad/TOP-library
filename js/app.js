@@ -1,7 +1,12 @@
 let myLibrary = [];
-
-if (localStorage.getItem('myBooks')) {
-    loadStorage();
+// App status
+let app = {
+    hasBooks: false,
+    showingCard: false,
+    showingIndex: null,
+    bookGrid: null,
+    backgroundElement: null,
+    formElement: null,
 }
 
 function updateStorage() {
@@ -11,7 +16,7 @@ function updateStorage() {
 function loadStorage() {
     const loadedBooks = JSON.parse(localStorage.getItem('myBooks'));
     for (let book of loadedBooks) {
-        const restoredBook = convertBook(book);
+        const restoredBook = restoreBook(book);
         myLibrary.push(restoredBook);
     }
 }
@@ -27,7 +32,7 @@ Book.prototype.info = function () {
     return `${this.title} by ${this.author}, ${this.pages}, ${this.read ? "already read" : "not read yet"}`;
 }
 
-function convertBook(props) {
+function restoreBook(props) {
     let restoredBook = new Book();
     for (var key in props) {
         if (props.hasOwnProperty(key)) {
@@ -47,38 +52,65 @@ function addBookToLibrary(title, author, summary, pages, read, index = undefined
     }
     const newIndex = myLibrary.push(newBook) - 1;
     updateStorage();
-    const newCard = createCard(newBook.title, newBook.author, "", newBook.pages, newBook.read, newIndex);
+    const newCard = createCard(newBook.title, newBook.author, newBook.summary, newBook.pages, newBook.read, newIndex);
     appendCard(newCard);
     return;
 }
 
 function displaySavedBooks() {
-    bookContainer.innerHTML = "";
-    bookContainer.classList.add('mainGrid');
+    app.bookGrid.innerHTML = "";
+    app.bookGrid.classList.add('mainGrid');
 
     for (let book of myLibrary) {
         const index = myLibrary.indexOf(book);
-        const newCard = createCard(book.title, book.author, "", book.pages, book.read, index);
+        const newCard = createCard(book.title, book.author, book.summary, book.pages, book.read, index);
         appendCard(newCard);
     }
+}
+
+function disableScroll(container) {
+    // Get the current page scroll position
+    scrollTop = window.pageYOffset || container.scrollTop;
+    scrollLeft = window.pageXOffset || container.scrollLeft,
+
+        // if any scroll is attempted, set this to the previous value
+        container.onscroll = function () {
+            container.scrollTo(scrollLeft, scrollTop);
+        };
+}
+
+function enableScroll(container) {
+    container.onscroll = function () { };
 }
 
 function createCard(title, author, summary, pages, read, index) {
     const card = document.createElement('div');
     card.classList.add("card");
     card.setAttribute('data-index', index);
-    card.addEventListener('click', e => showBookInfo(card.dataset.index));
+    card.addEventListener('click', e => displayBookInfo(card.dataset.index));
 
     card.insertAdjacentHTML('afterbegin', `
     <figure class="cardImgContainer">
-        <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-    </figure>
-    <div class="cardData"><span class="bookTitle userInput"></span>
-        <p class="authorData">by <span class="bookAuthor userInput"></span></p>
-        <p class="bookSummary userInput"></p>
-        <p class="pagesData">Pages: <span class="bookPages userInput"></span></p>
-        <button class="readButton userInput"></button>
-    </div>
+  <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
+</figure>
+<div class="cardData">
+  <p class="bookTitle">
+    <span class="bold initial">Title: </span>
+    <span class="userInput"></span>
+  </p>
+  <p class="authorData">
+    <span class="bold initial">Author: </span>
+    by <span class="bookAuthor userInput"></span>
+  </p>
+  <p class="bookSummary userInput initial"></p>
+  <p class="pagesData initial">Pages: <span class="bookPages userInput"></span></p>
+  <p class="wasRead initial">Have you read this book?: <span class="wasRead userInput"></span></p>
+  <div class="buttonContainer initial">
+    <button class="green">Mark as read</button>
+    <button class="blue">Edit</button>
+    <button class="red">Delete book</button>
+  </div>
+</div>
     `);
 
     const inputElements = card.getElementsByClassName("userInput");
@@ -89,136 +121,109 @@ function createCard(title, author, summary, pages, read, index) {
     return card;
 }
 
-
 function appendCard(card) {
-    if (!hasBooks) {
-        bookContainer.innerHTML = "";
-        bookContainer.classList.add('mainGrid');
-        hasBooks = true;
+    if (!app.hasBooks) {
+        /** 
+         ** This removes the empty initial message and add grid class to display book
+         ** cards when there is no book in storage and we are adding our first book.
+         */
+        app.bookGrid.innerHTML = "";
+        app.bookGrid.classList.add('mainGrid');
+        app.hasBooks = true;
     }
-    bookContainer.appendChild(card);
+    app.bookGrid.appendChild(card);
 }
 
-const bookContainer = document.getElementById('bookContainer');
-let hasBooks = false;
+function createForm() {
+    app.formElement = document.createElement('div');
+    app.formElement.classList.add('formCardContainer');
+    app.formElement.setAttribute("id", "formContainer");
 
-if (myLibrary.length > 0) {
-    displaySavedBooks();
-    hasBooks = true;
-}
-
-const formCard = document.createElement('div');
-formCard.classList.add('formCardContainer');
-formCard.setAttribute("id", "formContainer");
-
-formCard.insertAdjacentHTML('afterbegin', `
+    app.formElement.insertAdjacentHTML('afterbegin', `
 <form class="formCard" id="userInputForm">
     <legend><h1>Add your new book data</h1></legend>
     <p>
     <label for="title">
-        <span>Book title: </span>
-        <input type="text" id="title" name="bookTitle">
+    <span>Book title: </span>
+    <input type="text" id="title" name="bookTitle">
     </label>
     </p>
     <p>
     <label for="author">
         <span>Book author: </span>
         <input type="text" id="author" name="bookAuthorName">
-    </label>
-    </p>
-    <p>
-    <label for="summary">
+        </label>
+        </p>
+        <p>
+        <label for="summary">
         <span>Book summary: </span>
         <textarea id="summary" name="bookSummary" rows="10" cols="50"> </textarea>
-    </label>
-    </p>
-    <p>
-    <label for="pages">
+        </label>
+        </p>
+        <p>
+        <label for="pages">
         <span>Number of pages: </span>
         <input type="number" id="pages" name="bookTotalPages">
-    </label>
-    </p>
-    <p>
-    <label for="read">
+        </label>
+        </p>
+        <p>
+        <label for="read">
         <span>Have you read this book? </span>
         <select name="bookHasBeenRead" id="read">
         <option value="true">Yes</option>
         <option value="false" selected="selected">No</option>
         </select>
-    </label>
-    </p>
-    <p>
-    <button type="button" class="saveButton">Save book</button>
-    </p>
-    <button type="button" class="exitForm">X</button>
-</form>
-`);
-
-const bookCard = document.createElement('div');
-bookCard.classList.add('bookCardContainer');
-bookCard.setAttribute("id", "bookInfoContainer");
-
-bookCard.insertAdjacentHTML('afterbegin', `
-<div class="formCard">
-  <h1>Selected book info</h1>
-  <div class="bookCardHead">
-    <div>
-      <h2>Title</h2>
-      <p class="userData"></p>
-    </div>
-    <div>
-      <h2>Author</h2>
-      <p class="userData"></p>
-    </div>
-    <div class="right">
-      <img class="bookImg" src="./img/pexels-heather-mckeen-582070.jpg" alt="book image">
-    </div>
-  </div>
-  <div>
-    <h2>Summary</h2>
-    <p class="userData"></p>
-  </div>
-  <div class="bookInfoFooter">
-    <div>
-      <h2>Pages</h2>
-      <p class="userData"></p>
-    </div>
-    <div>
-      <h2>Have you read it?</h2>
-      <p class="userData"></p>
-    </div>
-  </div>
-  <div class="bookCardButtons">
-    <button type="button" class="editButton">Edit</button>
-    <button type="button" class="deleteButton">Delete</button>
-    <button type="button" class="exitForm">X</button>
-  </div>
-</div>
-`);
-
-const bookInfoButtons = bookCard.querySelectorAll('.bookCardButtons button');
-bookInfoButtons[0].addEventListener('click', editInputs);
-bookInfoButtons[1].addEventListener('click', deleteBook);
-bookInfoButtons[2].addEventListener('click', closeInputForm);
-
-const formButtons = formCard.getElementsByTagName('button');
-formButtons[0].addEventListener('click', saveInputs);
-formButtons[1].addEventListener('click', closeInputForm);
-
+        </label>
+        </p>
+        <p>
+        <button type="button" class="saveButton">Save book</button>
+        </p>
+        <button type="button" class="exitForm">X</button>
+        </form>
+        `);
+    const formButtons = app.formElement.getElementsByTagName('button');
+    formButtons[0].addEventListener('click', saveInputs);
+    formButtons[1].addEventListener('click', closeInputForm);
+}
 
 function displayInputForm() {
-    bookContainer.parentElement.appendChild(formCard);
-    document.querySelector('#userInputForm span').value = undefined;
+    app.bookGrid.parentElement.appendChild(app.formElement);
     const formInputs = document.getElementById("userInputForm").elements;
     for (let input of formInputs) input.value = "";
 }
 
-function displayBookInfo() {
-    bookContainer.parentElement.appendChild(bookCard);
+function displayBookInfo(index) {
+    app.showingIndex = index;
+    app.bookGrid.parentElement.appendChild(app.backgroundElement);
+    const card = document.querySelector(`div[data-index='${index}']`);
+    const cardImage = card.querySelector('.card .cardImgContainer .bookImg');
+    card.querySelector('.cardData').classList.add('expanded');
+    const hiddenData = card.querySelectorAll('.cardData>.initial');
+    for (let element of hiddenData) element.classList.add('display');
+    card.classList.add('expanded');
+    cardImage.classList.add('display');
+    const cardData = card.getBoundingClientRect();
+    card.style.setProperty('--left-padding', `${(window.innerWidth - cardData.width) / 2 - cardData.x}px`);
+    card.style.setProperty('--top-padding', `${(window.innerHeight - cardData.height) / 2 - cardData.y}px`);
+    disableScroll(app.bookGrid);
+}
+
+function closeBookInfo() {
+    const index = app.showingIndex;
+    app.bookGrid.parentElement.lastChild.remove();
+    const card = document.querySelector(`div[data-index='${index}']`);
+    const cardImage = card.querySelector('.card .cardImgContainer .bookImg');
+    const hiddenData = card.querySelectorAll('.cardData>.initial');
+    for (let element of hiddenData) element.classList.remove('display');
+    card.classList.remove('expanded');
+    cardImage.classList.remove('display');
+    card.style.removeProperty('--left-padding');
+    card.style.removeProperty('--top-padding');
+    enableScroll(app.bookGrid);
 }
 
 function closeInputForm() {
-    bookContainer.parentElement.lastChild.remove();
+    app.bookGrid.parentElement.lastChild.remove();
 }
 
 function saveInputs() {
@@ -262,5 +267,26 @@ function deleteBook() {
     displaySavedBooks();
 }
 
-const addButton = document.getElementById('addNewBook');
-addButton.addEventListener('click', displayInputForm);
+function createBackground() {
+    app.backgroundElement = document.createElement('div');
+    app.backgroundElement.classList.add('bookCardContainer');
+    app.backgroundElement.setAttribute("id", "bookInfoContainer");
+    app.backgroundElement.addEventListener('click', closeBookInfo);
+}
+
+function initialize() {
+    app.bookGrid = document.getElementById('bookContainer');
+    if (localStorage.getItem('myBooks')) {
+        loadStorage();
+    }
+    if (myLibrary.length > 0) {
+        displaySavedBooks();
+        app.hasBooks = true;
+    }
+    createBackground();
+    createForm();
+    const addButton = document.getElementById('addNewBook');
+    addButton.addEventListener('click', displayInputForm);
+}
+
+initialize();

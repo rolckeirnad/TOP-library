@@ -28,8 +28,8 @@ header h1 {
 
 main {
     flex: 1;
-    overflow-y: auto;
-    padding: 10px 30px;
+    overflow-y: hidden;
+    padding: 10px 0px;
     background-color: var(--secondary-color);
 }
 
@@ -37,6 +37,10 @@ header {
     background-color: var(--main-color);
     display: inline-flex;
     align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 3;
 }
 
 header button {
@@ -48,11 +52,6 @@ header button {
     background-color: rgb(255 106 0);
     color: white;
     font-weight: bold;
-}
-
-.cardContainer {
-    width: 100%;
-    height: 100%;
 }
 
 .initialMessage {
@@ -67,6 +66,10 @@ header button {
 }
 
 .mainGrid {
+    width: 100%;
+    height: 100%;
+    padding: 57px 30px 18px;
+    overflow-y: auto;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     grid-template-rows: repeat(2, minmax(248px, 30vh));
@@ -87,18 +90,17 @@ header button {
 
 }
 
-.card:hover .cardImgContainer .bookImg {
-    opacity: 1;
-}
-
 .card {
+    position: relative;
+    top: 0;
+    left: 0;
     transition: ease 0.3s;
 }
 
 .card:hover {
     background-color: var(--main-active-card-color);
     transform: scale(1.05, 1.05);
-    z-index: 2;
+    z-index: 0;
 }
 
 .card .cardImgContainer {
@@ -118,6 +120,14 @@ header button {
     transition: ease 0.2s;
 }
 
+.card:hover .cardImgContainer .bookImg {
+    opacity: 1;
+}
+
+.card .cardImgContainer .bookImg.display {
+    opacity: 1;
+}
+
 .card .cardData {
     display: grid;
     grid-template-rows: 50% 50%;
@@ -127,8 +137,12 @@ header button {
     line-height: 0.9rem;
 }
 
-.card .cardData>* {
+.card .cardData .initial {
     display: none;
+}
+
+.card .cardData>.initial.display {
+    display: block;
 }
 
 .card .cardData .bookTitle {
@@ -154,28 +168,24 @@ header button {
     color: var(--secondary-card-font-color);
 }
 
-.card .readButton {
-    background-color: rgb(14, 173, 226);
-    border-radius: 13px;
-    border: none;
-    width: fit-content;
-    justify-self: center;
-    padding: 5px 15px;
-}
-
 footer {
     display: flex;
     justify-content: center;
     background-color: var(--footer-background);
     color: var(--main-font-color);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 3;
 }
 
+/* This is the white background */
 #formContainer,
 #bookInfoContainer {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 2;
+    z-index: 3;
     width: 100%;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.7);
@@ -219,61 +229,19 @@ footer {
     font-weight: bold;
 }
 
-.bookCardHead {
+.card.expanded {
+    --top-padding: 0px;
+    --left-padding: 0px;
+    z-index: 4;
+    background-color: var(--main-active-card-color);
+    transform: scale(1);
+    position: relative;
+    top: var(--top-padding);
+    left: var(--left-padding);
+    width: clamp(385px, 60vw, 500px);
+    height: 90vh;
+    max-height: 100vh;
     display: grid;
-    grid-template: repeat(2, minmax(0, 1fr))/repeat(2, minmax(0, 1fr));
-    width: 100%;
-    height: 100%;
-}
-
-.bookCardHead .right {
-    grid-column: 2 / 3;
-    grid-row: 1 / 3;
-    width: 100%;
-    height: 100%;
-    border-radius: 30px;
-    display: flex;
-    overflow: hidden;
-}
-
-.bookCardHead img {
-    object-fit: contain;
-    width: 100%;
-    max-width: 100%;
-}
-
-.bookInfoFooter {
-    display: flex;
-    justify-content: space-between;
-}
-
-#bookInfoContainer>div>div:nth-child(3)>p {
-    display: -webkit-box;
-    -webkit-line-clamp: 10;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    height: 10rem;
-}
-
-button.editButton {
-    background-color: greenyellow;
-}
-
-button.deleteButton {
-    background-color: red;
-    color: var(--main-font-color);
-}
-
-.bookCardButtons{
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-}
-
-.editButton, .deleteButton {
-    font-weight: bold;
-    border: none;
-    width: fit-content;
-    padding: 10px 30px;
-    border-radius: 10px;
+    grid-template-rows: 1fr 1fr;
+    transition: ease 0.3s;
 }
