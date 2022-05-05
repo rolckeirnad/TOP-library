@@ -42,7 +42,7 @@ function restoreBook(props) {
     return restoredBook;
 }
 
-function addBookToLibrary(title, author, summary, pages, read, index = undefined) {
+function addBookToLibrary(title, author, summary, pages, read, index = null) {
     const newBook = new Book(title, author, summary, pages, read);
     if (index) {
         myLibrary[index] = newBook;
@@ -83,6 +83,13 @@ function enableScroll(container) {
     container.onscroll = function () { };
 }
 
+function createBackground() {
+    app.backgroundElement = document.createElement('div');
+    app.backgroundElement.classList.add('bookCardContainer');
+    app.backgroundElement.setAttribute("id", "bookInfoContainer");
+    app.backgroundElement.addEventListener('click', closeBookInfo);
+}
+
 function createCard(title, author, summary, pages, read, index) {
     const card = document.createElement('div');
     card.classList.add("card");
@@ -106,17 +113,27 @@ function createCard(title, author, summary, pages, read, index) {
   <p class="pagesData initial">Pages: <span class="bookPages userInput"></span></p>
   <p class="wasRead initial">Have you read this book?: <span class="wasRead userInput"></span></p>
   <div class="buttonContainer initial">
-    <button class="green">Mark as read</button>
-    <button class="blue">Edit</button>
-    <button class="red">Delete book</button>
+    <button class="readButton">${read ? "Mark as unread" : "Mark as read"}</button>
+    <button class="editButton">Edit Book Info</button>
+    <button class="deleteButton">Delete this book</button>
   </div>
 </div>
     `);
 
+    if (read) {
+        card.querySelector('.buttonContainer .readButton').classList.add('unread');
+    }
+
     const inputElements = card.getElementsByClassName("userInput");
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 4; i++) {
         inputElements[i].insertAdjacentText('afterbegin', arguments[i]);
     }
+    inputElements[4].insertAdjacentText('afterbegin', read ? "Yes, already read" : "No, not read yet");
+
+    const button = card.querySelectorAll('.buttonContainer button');
+    button[0].addEventListener('click', toggleRead);//Mark as read/unread
+    button[1].addEventListener('click', editInputs);//Edit book info
+    button[2].addEventListener('click', deleteBook);//Delete this book
 
     return card;
 }
@@ -192,8 +209,14 @@ function displayInputForm() {
     for (let input of formInputs) input.value = "";
 }
 
+function closeInputForm() {
+    app.bookGrid.parentElement.lastChild.remove();
+}
+
 function displayBookInfo(index) {
-    app.showingIndex = index;
+    if (app.showingCard) return;
+    app.showingIndex = +index;
+    app.showingCard = true;
     app.bookGrid.parentElement.appendChild(app.backgroundElement);
     const card = document.querySelector(`div[data-index='${index}']`);
     const cardImage = card.querySelector('.card .cardImgContainer .bookImg');
@@ -213,37 +236,37 @@ function closeBookInfo() {
     app.bookGrid.parentElement.lastChild.remove();
     const card = document.querySelector(`div[data-index='${index}']`);
     const cardImage = card.querySelector('.card .cardImgContainer .bookImg');
+    card.querySelector('.cardData').classList.remove('expanded');
     const hiddenData = card.querySelectorAll('.cardData>.initial');
     for (let element of hiddenData) element.classList.remove('display');
     card.classList.remove('expanded');
     cardImage.classList.remove('display');
     card.style.removeProperty('--left-padding');
     card.style.removeProperty('--top-padding');
+    app.showingIndex = null;
+    app.showingCard = false;
     enableScroll(app.bookGrid);
 }
 
-function closeInputForm() {
-    app.bookGrid.parentElement.lastChild.remove();
+function toggleRead() {
+    myLibrary[app.showingIndex].read = !myLibrary[app.showingIndex].read;
+    updateStorage();
+    refreshCard();
 }
 
-function saveInputs() {
-    const index = document.querySelector('#userInputForm span').value;
-    const form = document.getElementById("userInputForm").elements;
-    const data = [form[0].value, form[1].value, form[2].value, form[3].value, form[4].value];
-    addBookToLibrary(...data, +index);
-    closeInputForm();
-}
-
-function showBookInfo(index) {
-    displayBookInfo();
-    const dataOutputs = document.getElementsByClassName("userData");
-    const bookData = myLibrary[index];
-    const keys = Object.keys(bookData);
-    // Display values on elements
-    for (let i = 0; i < keys.length; i++) {
-        dataOutputs[i].textContent = bookData[keys[i]];
+function refreshCard() {
+    const targetCard = document.querySelector('.card.expanded');
+    const inputElements = targetCard.getElementsByClassName("userInput");
+    const bookKeys = Object.keys(myLibrary[app.showingIndex]);
+    for (let i = 0; i < bookKeys.length-1; i++) {
+        inputElements[i].textContent = "";
+        inputElements[i].insertAdjacentText('afterbegin', myLibrary[app.showingIndex][bookKeys[i]]);
     }
-    dataOutputs[0].value = index; // Set index in title element to retrieve it later
+    inputElements[4].textContent = "";
+    inputElements[4].insertAdjacentText('afterbegin', myLibrary[app.showingIndex].read ? "Yes, already read" : "No, not read yet");
+    const readButton = targetCard.querySelector('.buttonContainer .readButton');
+    readButton.classList.toggle('unread');
+    readButton.textContent = myLibrary[app.showingIndex].read ? "Mark as unread" : "Mark as read";
 }
 
 function editInputs() {
@@ -259,6 +282,14 @@ function editInputs() {
     document.querySelector('#userInputForm span').value = data.value;
 }
 
+function saveInputs() {
+    const form = document.getElementById("userInputForm").elements;
+    const wasRead = form[4].value == 'true' ? true : false;                             // Test for boolean value
+    const data = [form[0].value, form[1].value, form[2].value, form[3].value, wasRead];
+    addBookToLibrary(...data, app.showingIndex);
+    closeInputForm();
+}
+
 function deleteBook() {
     const data = document.querySelector(".formCard p.userData");
     myLibrary.splice(+data.value, 1);
@@ -267,12 +298,7 @@ function deleteBook() {
     displaySavedBooks();
 }
 
-function createBackground() {
-    app.backgroundElement = document.createElement('div');
-    app.backgroundElement.classList.add('bookCardContainer');
-    app.backgroundElement.setAttribute("id", "bookInfoContainer");
-    app.backgroundElement.addEventListener('click', closeBookInfo);
-}
+
 
 function initialize() {
     app.bookGrid = document.getElementById('bookContainer');
