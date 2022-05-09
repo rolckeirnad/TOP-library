@@ -294,3 +294,11 @@ footer {
 .buttonContainer button.deleteButton {
     background-color: #FF6B6B;
 }
+
+.invalidInput {
+    border: 2px solid red;
+}
+
+.invalidInput::placeholder {
+    color: red;
+}

@@ -164,13 +164,13 @@ function createForm() {
     <p>
     <label for="title">
     <span>Book title: </span>
-    <input type="text" id="title" name="bookTitle">
+    <input type="text" id="title" name="bookTitle" required>
     </label>
     </p>
     <p>
     <label for="author">
         <span>Book author: </span>
-        <input type="text" id="author" name="bookAuthorName">
+        <input type="text" id="author" name="bookAuthorName" required>
         </label>
         </p>
         <p>
@@ -182,7 +182,7 @@ function createForm() {
         <p>
         <label for="pages">
         <span>Number of pages: </span>
-        <input type="number" id="pages" name="bookTotalPages">
+        <input type="number" id="pages" name="bookTotalPages" required>
         </label>
         </p>
         <p>
@@ -217,6 +217,14 @@ function displayInputForm(text = "Add your new book data") {
 function closeInputForm() {
     const headerText = document.querySelector('#formHeaderText');
     headerText.innerHTML = "";
+    
+    // Remove wrong input styles
+    const formInputs = document.getElementById("userInputForm").elements;
+    for (let input of formInputs) {
+        input.classList.remove('invalidInput');
+        input.setAttribute("placeholder", "");
+    }
+
     app.bookGrid.parentElement.lastChild.remove();
     app.showingForm = false;
     app.formIndex = null;
@@ -293,6 +301,18 @@ function editInputs() {
 
 function saveInputs() {
     const formInputs = document.getElementById("userInputForm").elements;
+    let validInputs = true;
+    for (let input of formInputs) {
+        if (input.hasAttribute("required") && input.value == "") {
+            input.classList.add('invalidInput');
+            input.setAttribute("placeholder", "Enter a valid input");
+            validInputs = false;
+        }
+    }
+    if (!validInputs) {
+        console.log("invalid inputs")
+        return;
+    }
     const wasRead = formInputs[4].value == 'true' ? true : false;        // Get string and return boolean
     const data = [formInputs[0].value, formInputs[1].value, formInputs[2].value, formInputs[3].value, wasRead];
     addBookToLibrary(...data, app.formIndex);
@@ -325,3 +345,8 @@ function initialize() {
 }
 
 initialize();
+
+/* 
+   Añadir validacion de datos
+   Revisar animacion al abrir y cerrar cartas
+ */
