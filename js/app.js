@@ -160,7 +160,7 @@ function createForm() {
 
     app.formElement.insertAdjacentHTML('afterbegin', `
 <form class="formCard" id="userInputForm">
-    <legend><h1>Add your new book data</h1></legend>
+    <legend id="formHeaderText"></legend>
     <p>
     <label for="title">
     <span>Book title: </span>
@@ -205,14 +205,18 @@ function createForm() {
     formButtons[1].addEventListener('click', closeInputForm);
 }
 
-function displayInputForm() {
+function displayInputForm(text = "Add your new book data") {
     app.bookGrid.parentElement.appendChild(app.formElement);
+    const headerText = document.querySelector('#formHeaderText');
+    headerText.insertAdjacentHTML('afterbegin', `<h1>${text}</h1>`);
     const formInputs = document.getElementById("userInputForm").elements;
     for (let input of formInputs) input.value = "";
     return formInputs;
 }
 
 function closeInputForm() {
+    const headerText = document.querySelector('#formHeaderText');
+    headerText.innerHTML = "";
     app.bookGrid.parentElement.lastChild.remove();
     app.showingForm = false;
     app.formIndex = null;
@@ -279,7 +283,7 @@ function editInputs() {
     app.formIndex = app.showingIndex;
     app.showingForm = true;
     closeBookInfo();
-    const formInputs = displayInputForm();
+    const formInputs = displayInputForm("Edit your book data");
     const bookData = myLibrary[app.formIndex];
     const keys = Object.keys(bookData);
     for (let i = 0; i < keys.length; i++) {
@@ -317,7 +321,7 @@ function initialize() {
     createBackground();
     createForm();
     const addButton = document.getElementById('addNewBook');
-    addButton.addEventListener('click', displayInputForm);
+    addButton.addEventListener('click', e => displayInputForm());
 }
 
 initialize();
