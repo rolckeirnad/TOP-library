@@ -4,6 +4,8 @@ let app = {
     hasBooks: false,
     showingCard: false,
     showingIndex: null,
+    showingForm: false,
+    formIndex: null,
     bookGrid: null,
     backgroundElement: null,
     formElement: null,
@@ -44,16 +46,16 @@ function restoreBook(props) {
 
 function addBookToLibrary(title, author, summary, pages, read, index = null) {
     const newBook = new Book(title, author, summary, pages, read);
-    if (index) {
+    if (index != null) {
         myLibrary[index] = newBook;
         updateStorage();
         displaySavedBooks();
-        return;
+    } else {
+        const newIndex = myLibrary.push(newBook) - 1;
+        updateStorage();
+        const newCard = createCard(newBook.title, newBook.author, newBook.summary, newBook.pages, newBook.read, newIndex);
+        appendCard(newCard);
     }
-    const newIndex = myLibrary.push(newBook) - 1;
-    updateStorage();
-    const newCard = createCard(newBook.title, newBook.author, newBook.summary, newBook.pages, newBook.read, newIndex);
-    appendCard(newCard);
     return;
 }
 
@@ -94,7 +96,7 @@ function createCard(title, author, summary, pages, read, index) {
     const card = document.createElement('div');
     card.classList.add("card");
     card.setAttribute('data-index', index);
-    card.addEventListener('click', e => displayBookInfo(card.dataset.index));
+    card.addEventListener('click', e => displayBookInfo(card.dataset.index), true);
 
     card.insertAdjacentHTML('afterbegin', `
     <figure class="cardImgContainer">
@@ -207,28 +209,32 @@ function displayInputForm() {
     app.bookGrid.parentElement.appendChild(app.formElement);
     const formInputs = document.getElementById("userInputForm").elements;
     for (let input of formInputs) input.value = "";
+    return formInputs;
 }
 
 function closeInputForm() {
     app.bookGrid.parentElement.lastChild.remove();
+    app.showingForm = false;
+    app.formIndex = null;
 }
 
 function displayBookInfo(index) {
-    if (app.showingCard) return;
-    app.showingIndex = +index;
-    app.showingCard = true;
-    app.bookGrid.parentElement.appendChild(app.backgroundElement);
-    const card = document.querySelector(`div[data-index='${index}']`);
-    const cardImage = card.querySelector('.card .cardImgContainer .bookImg');
-    card.querySelector('.cardData').classList.add('expanded');
-    const hiddenData = card.querySelectorAll('.cardData>.initial');
-    for (let element of hiddenData) element.classList.add('display');
-    card.classList.add('expanded');
-    cardImage.classList.add('display');
-    const cardData = card.getBoundingClientRect();
-    card.style.setProperty('--left-padding', `${(window.innerWidth - cardData.width) / 2 - cardData.x}px`);
-    card.style.setProperty('--top-padding', `${(window.innerHeight - cardData.height) / 2 - cardData.y}px`);
-    disableScroll(app.bookGrid);
+    if (!app.showingCard && !app.showingForm) {
+        app.showingIndex = +index;
+        app.showingCard = true;
+        app.bookGrid.parentElement.appendChild(app.backgroundElement);
+        const card = document.querySelector(`div[data-index='${index}']`);
+        const cardImage = card.querySelector('.card .cardImgContainer .bookImg');
+        card.querySelector('.cardData').classList.add('expanded');
+        const hiddenData = card.querySelectorAll('.cardData>.initial');
+        for (let element of hiddenData) element.classList.add('display');
+        card.classList.add('expanded');
+        cardImage.classList.add('display');
+        const cardData = card.getBoundingClientRect();
+        card.style.setProperty('--left-padding', `${(window.innerWidth - cardData.width) / 2 - cardData.x}px`);
+        card.style.setProperty('--top-padding', `${(window.innerHeight - cardData.height) / 2 - cardData.y}px`);
+        disableScroll(app.bookGrid);
+    }
 }
 
 function closeBookInfo() {
@@ -258,7 +264,7 @@ function refreshCard() {
     const targetCard = document.querySelector('.card.expanded');
     const inputElements = targetCard.getElementsByClassName("userInput");
     const bookKeys = Object.keys(myLibrary[app.showingIndex]);
-    for (let i = 0; i < bookKeys.length-1; i++) {
+    for (let i = 0; i < bookKeys.length - 1; i++) {
         inputElements[i].textContent = "";
         inputElements[i].insertAdjacentText('afterbegin', myLibrary[app.showingIndex][bookKeys[i]]);
     }
@@ -270,31 +276,30 @@ function refreshCard() {
 }
 
 function editInputs() {
-    const data = document.querySelector(".formCard p.userData");
-    closeInputForm();
-    displayInputForm();
-    const formInputs = document.getElementById("userInputForm").elements;
-    const bookData = myLibrary[+data.value];
+    app.formIndex = app.showingIndex;
+    app.showingForm = true;
+    closeBookInfo();
+    const formInputs = displayInputForm();
+    const bookData = myLibrary[app.formIndex];
     const keys = Object.keys(bookData);
     for (let i = 0; i < keys.length; i++) {
         formInputs[i].value = bookData[keys[i]];
     }
-    document.querySelector('#userInputForm span').value = data.value;
 }
 
 function saveInputs() {
-    const form = document.getElementById("userInputForm").elements;
-    const wasRead = form[4].value == 'true' ? true : false;                             // Test for boolean value
-    const data = [form[0].value, form[1].value, form[2].value, form[3].value, wasRead];
-    addBookToLibrary(...data, app.showingIndex);
+    const formInputs = document.getElementById("userInputForm").elements;
+    const wasRead = formInputs[4].value == 'true' ? true : false;        // Get string and return boolean
+    const data = [formInputs[0].value, formInputs[1].value, formInputs[2].value, formInputs[3].value, wasRead];
+    addBookToLibrary(...data, app.formIndex);
     closeInputForm();
 }
 
 function deleteBook() {
-    const data = document.querySelector(".formCard p.userData");
-    myLibrary.splice(+data.value, 1);
+    const tempIndex = app.showingIndex;
+    closeBookInfo();
+    myLibrary.splice(tempIndex, 1);
     updateStorage();
-    closeInputForm();
     displaySavedBooks();
 }
 
