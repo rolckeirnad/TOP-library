@@ -96,6 +96,7 @@ header button {
     top: 0;
     left: 0;
     transition: ease 0.3s;
+    cursor: pointer;
 }
 
 .card:hover {
@@ -166,10 +167,10 @@ header button {
     -webkit-box-orient: vertical;
     overflow: hidden;
     line-height: 1rem;
+    font-size: 1rem;
 }
 
-.card .bookAuthor,
-.bookPages {
+.card .cardData .userInput {
     font-weight: 600;
     color: var(--secondary-card-font-color);
 }
@@ -195,7 +196,7 @@ footer {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 3;
+    z-index: 4;
     width: 100%;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.7);
@@ -210,9 +211,12 @@ footer {
     min-height: auto;
     max-height: 100vh;
     width: clamp(385px, 60vw, 500px);
-    background-color: white;
+    background-color: var(--main-active-card-color);
     position: relative;
     padding: 25px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2a2929;
 }
 
 .formCard legend {
@@ -223,6 +227,22 @@ footer {
 .formCard label {
     display: flex;
     flex-direction: column;
+}
+
+.formCard input,
+.formCard select,
+.formCard textarea {
+    padding: 0 6px;
+    background-color: white;
+    border: 1px solid var(--main-card-color);
+    border-radius: 4px;
+    font-size: 1.0rem;
+}
+
+.formCard p:nth-child(7) {
+    display: flex;
+    justify-content: center;
+    align-items: end;
 }
 
 .exitForm {
@@ -239,10 +259,23 @@ footer {
     font-weight: bold;
 }
 
+.saveButton {
+    height: fit-content;
+    width: fit-content;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: rgb(0, 177, 0);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-top: 5px;
+}
+
 .card.expanded {
     --top-padding: 0px;
     --left-padding: 0px;
-    z-index: 4;
+    z-index: 5;
     background-color: var(--main-active-card-color);
     transform: scale(1);
     position: relative;
@@ -252,15 +285,41 @@ footer {
     height: 90vh;
     max-height: 100vh;
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: minmax(0, 0.6fr) minmax(0, 1fr);
     transition: ease 0.3s;
     box-shadow: 1px 5px 10px -4px rgba(0, 0, 0, 0.659);
+    cursor: default;
 }
 
 .cardData.expanded {
     height: 100%;
     display: grid;
     grid-template-rows: 1fr 1fr 4fr 1fr 1fr 2fr;
+}
+
+.cardData.expanded .bookTitle {
+    line-height: 1.5rem;
+    font-size: 1.5rem;
+    height: min-content;
+}
+
+.cardData.expanded .authorData {
+    margin-top: 0.5rem;
+    line-height: 1.3rem;
+    font-size: 1.3rem;
+    height: min-content;
+}
+
+.cardData.expanded .bookTitle .userInput {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cardData.expanded .bookSummary {
+    margin: 1rem 0 0.5rem;
+    height: 6rem;
 }
 
 .cardData.expanded>.buttonContainer.initial.display {
@@ -275,8 +334,10 @@ footer {
     width: max-content;
     height: fit-content;
     padding: 0.5rem 1rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--main-font-color);
+    cursor: pointer;
 }
 
 .buttonContainer button.readButton {
