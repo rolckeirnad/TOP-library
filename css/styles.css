@@ -152,7 +152,6 @@ header button {
 
 .cardData {
     display: grid;
-    grid-template-rows: 50% 50%;
     gap: 0.2rem;
     height: 4.2rem;
     padding: 0 0 0px;
