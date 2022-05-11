@@ -60,13 +60,19 @@ function addBookToLibrary(title, author, summary, pages, read, index = null) {
 }
 
 function displaySavedBooks() {
-    app.bookGrid.innerHTML = "";
-    app.bookGrid.classList.add('mainGrid');
+    if (myLibrary.length == 0) {
+        app.bookGrid.innerHTML = "";
+        app.bookGrid.classList.remove('mainGrid');
+        app.bookGrid.insertAdjacentHTML('afterbegin', `<div class="initialMessage">Click on "Add book"to add your first book</div>`)
+    } else {
+        app.bookGrid.innerHTML = "";
+        app.bookGrid.classList.add('mainGrid');
 
-    for (let book of myLibrary) {
-        const index = myLibrary.indexOf(book);
-        const newCard = createCard(book.title, book.author, book.summary, book.pages, book.read, index);
-        appendCard(newCard);
+        for (let book of myLibrary) {
+            const index = myLibrary.indexOf(book);
+            const newCard = createCard(book.title, book.author, book.summary, book.pages, book.read, index);
+            appendCard(newCard);
+        }
     }
 }
 
