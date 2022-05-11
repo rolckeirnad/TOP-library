@@ -72,6 +72,7 @@ header button {
     background-color: var(--header-button);
     color: white;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .initialMessage {
@@ -275,6 +276,7 @@ footer {
     color: white;
     font-size: larger;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .saveButton {
@@ -288,6 +290,7 @@ footer {
     border-radius: 10px;
     padding: 10px 20px;
     margin-top: 5px;
+    cursor: pointer;
 }
 
 .card.expanded {
@@ -355,6 +358,10 @@ footer {
     font-size: 1rem;
     font-weight: 600;
     color: var(--main-font-color);
+    cursor: pointer;
+}
+
+.buttonContainer button {
     cursor: pointer;
 }
 
