@@ -217,7 +217,7 @@ function displayInputForm(text = "Add your new book data") {
 function closeInputForm() {
     const headerText = document.querySelector('#formHeaderText');
     headerText.innerHTML = "";
-    
+
     // Remove wrong input styles
     const formInputs = document.getElementById("userInputForm").elements;
     for (let input of formInputs) {
@@ -243,8 +243,8 @@ function displayBookInfo(index) {
         card.classList.add('expanded');
         cardImage.classList.add('display');
         const cardData = card.getBoundingClientRect();
-        card.style.setProperty('--left-padding', `${(window.innerWidth - cardData.width) / 2 - cardData.x}px`);
-        card.style.setProperty('--top-padding', `${(window.innerHeight - cardData.height) / 2 - cardData.y}px`);
+        card.style.setProperty('--left-padding', `${((window.innerWidth - cardData.width) / 2) - cardData.left}px`);
+        card.style.setProperty('--top-padding', `${((window.innerHeight - cardData.height) / 2) - cardData.top}px`);
         disableScroll(app.bookGrid);
     }
 }
@@ -345,8 +345,3 @@ function initialize() {
 }
 
 initialize();
-
-/* 
-   Añadir validacion de datos
-   Revisar animacion al abrir y cerrar cartas
- */
