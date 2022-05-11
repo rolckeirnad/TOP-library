@@ -34,6 +34,25 @@ main {
     background-color: var(--secondary-color);
 }
 
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+    opacity: 0;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    /* background-color: inherit; */
+    border-color: inherit;
+    border-right-style: inset;
+    border-right-width: calc(100vw + 100vh);
+    border-radius: 4px;
+}
+
 header {
     background-color: var(--main-color);
     display: inline-flex;
@@ -75,7 +94,7 @@ header button {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     grid-template-rows: repeat(2, minmax(248px, 30vh));
     grid-auto-rows: minmax(248px, 30vh);
-    gap: 20px;
+    gap: 20px 25px;
 }
 
 .card,
