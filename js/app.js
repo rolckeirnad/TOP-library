@@ -22,16 +22,18 @@ function loadStorage() {
         myLibrary.push(restoredBook);
     }
 }
-function Book(title, author, summary = "", pages, read) {
-    this.title = title;
-    this.author = author;
-    this.summary = summary;
-    this.pages = pages;
-    this.read = read;
-}
+class Book {
+    constructor(title, author, summary = "", pages, read) {
+        this.title = title;
+        this.author = author;
+        this.summary = summary;
+        this.pages = pages;
+        this.read = read;
+    }
 
-Book.prototype.info = function () {
-    return `${this.title} by ${this.author}, ${this.pages}, ${this.read ? "already read" : "not read yet"}`;
+    info() {
+        return `${this.title} by ${this.author}, ${this.pages}, ${this.read ? "already read" : "not read yet"}`;
+    }
 }
 
 function restoreBook(props) {
